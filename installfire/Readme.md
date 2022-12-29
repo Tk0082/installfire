@@ -1,9 +1,13 @@
 
 # INSTALLFIRE - Instale e atualize o Firefox de forma rápida e fácil.
 
-Para configurar o Programa no Sistema, digite o comando,
+Para conferir o modo de uso:
+
+	./installfire.sh -h
+
+Para configurar o Programa no Sistema, use:
 
 	./installfire -c
     
-Digite o comando ( instfire -h ), para conferir o modo de uso.
+Configurado, chamada simples com [ instfire ].
 
