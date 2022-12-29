@@ -7,7 +7,7 @@ Para conferir o modo de uso:
 
 Para configurar o Programa no Sistema, use:
 
-	./installfire -c
+	./installfire.sh -c
     
 Configurado, chamada simples com [ instfire ].
 
