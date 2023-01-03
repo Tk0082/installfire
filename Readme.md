@@ -1,5 +1,5 @@
 
-# INSTALLFIRE - Instale e atualize o Firefox de forma rápida e fácil.
+# INSTALLFIRE - Instale e atualize o Firefox no seu GNU/Linux, de forma rápida e fácil.
 
 Para conferir o modo de uso:
 
