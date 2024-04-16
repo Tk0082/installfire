@@ -36,30 +36,31 @@ usrX=$USER;
 dir="/usr/share/firefox"
 arq1=$(pwd/$2);
 
-if [ "$usrX" != "root" ]; 
-then
-	arq="/home/$usrX/Downloads/firefox*"
-	desk="/home/$usrX/Desktop/firefox.desktop"
+#if [ "$usrX" != "root" ]; 
+#then
+#	arq="$HOME/Downloads/firefox*"
+#	desk="/home/$usrX/Desktop/firefox.desktop"
 	
-	if [ ! -f "$arq1" ];
-	then
-		v=$(ls /home/$usrX/Downloads/firefox* | sed 's/.*-//g;s/.tar.*//g')
-	else
-		v=$(ls $arq1 | sed 's/.*-//g;s/.tar.*//g')
-	fi
-else
-	arq="/$usrX/Downloads/firefox*"
-	desk="/$usrX/Desktop/firefox.desktop"
+#	if [ ! -f "$arq1" ];
+#	then
+#		v=$(ls /home/$usrX/Downloads/firefox* | sed 's/.*-//g;s/.tar.*//g')
+#	else
+##		v=$(ls $arq1 | sed 's/.*-//g;s/.tar.*//g')
+#	fi
+#else
+	arq="$HOME/Downloads/firefox*"
+	desk="$HOME/Desktop/firefox.desktop"
 
 	if [ ! -f "$arq1" ];
 	then
-		v=$(ls /$usrX/Downloads/firefox* | sed 's/.*-//g;s/.tar.*//g')
+		v=$(ls $HOME/Downloads/firefox* | sed 's/.*-//g;s/.tar.*//g')
 	else
 		v=$(ls $arq1 | sed 's/.*-//g;s/.tar.*//g')
 	fi
-fi
+#fi
 
 # https://www.mozilla.org/pt-BR/firefox/download/thanks/	( Link direto arqv br.fire.bz2 ) 
+#https://download-installer.cdn.mozilla.net/pub/firefox/releases/125.0.1/linux-x86_64/pt-BR/firefox-*.tar.bz2
 
 msg="
 $C$N$l
@@ -117,9 +118,43 @@ config(){
 	fi
 }
 
+	# Download e instalação direta do Firefox PT-BR (Configurar o link para sua lingua )================
+download(){
+	clear
+	pkill firefox
+	rm -f $HOME/Downloads/firefox*
+	if [ ! -f $arq ]; 
+	then
+		clear
+		echo -e "$F$R\n\t\tArquivo não encontrado em Downloads!\n\n"
+		sleep .5
+		echo -e "$G$F==[ Baixando o$C$F Firefox$G$F ]================================"
+		wget https://download-installer.cdn.mozilla.net/pub/firefox/releases/125.0.1/linux-x86_64/pt-BR/firefox-125.0.1.tar.bz2 -P $HOME/Downloads/
+		sleep .5
+		clear
+		if [ "$usrX" != "root" ];
+		then
+			sudo tar -vxjf $arq -C $dir --overwrite 
+			exit 0
+		else
+			tar -vxjf $arq -C $dir --overwrite 
+			exit 0
+		fi
+	fi
+	sleep 1
+	clear
+
+	echo -e "$G$F\t\tCriando atalho..$Z"
+	touch $desk
+	ico
+	chmod +x $desk
+	chown $USER:$USER $desk
+	sudo cp $desk /usr/share/applications/
+
+}
+
 	# Verificar se o diretório existe, caso contrário, cria ====================
 pathfire(){
-
 	if [ ! -d "$dir" ];
 	then
 		sudo mkdir /usr/share/firefox
@@ -155,6 +190,7 @@ remove(){
 	# Extração do arqv .tar ====================
 install(){
 	clear
+	pkill firefox
 	sleep 1
 	echo -e "$G$F\n\t\tDescompactando arquivos.. \n$C$N"
 
@@ -198,15 +234,14 @@ install(){
 }
 
 
-if [ "$1" == "-h" ]; 
-then
+case $1 in  
+   -h)
 	clear
 	echo "$msg"
 	echo -ne "$F$C Pressione 'Enter' para sair: $Z"; read
 	clear
-
-elif [ "$1" == "-c" ];
-then
+	;;
+   -c)
 	clear
 	config &&
 	while [ config != True ];
@@ -217,10 +252,23 @@ then
 		clear
 		exit 0
 	done
-elif [ "$1" == "-i" ]; 
-then
+	;;
+   -d )
 	pathfire
-
+	download
+	while [ download != True ];
+	do
+		clear
+		echo $G$F$l
+		echo -e "\t\tFirefox instalado com sucesso!!"
+		echo $l$Z
+		sleep 1.5
+		clear
+		exit 0
+	done
+	;;
+   -i ) 
+	pathfire
 	install
 
 	while [ install != True ];
@@ -233,19 +281,20 @@ then
 		clear
 		exit 0
 	done
-elif [ "$1" == "-r" ]; 
-then
+	;;
+   -r) 
 	remove
 	exit 0
-elif [ "$1" == "-v" ]; 
-then
+	;;
+   -v) 
 	clear
 	echo -en "\n\t$G$F[4m$prog$Z -"
 	echo -e "$C$F $VS\n $Z"
 	sleep 1.5
 	clear
 	exit 0
-fi
+	;;
+esac
 
 # Tk082_
 
