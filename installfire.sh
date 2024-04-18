@@ -31,37 +31,21 @@ N="[6m"  # Normal
 Z="[0m"  # Zerar
 #=================================
 
-l="---------------------------------------------------------------------------------------"
+l="--------------------------------------------------------------------------------------------------------"
 prog=$(echo $0 | sed 's/.*\///g')
 dir="/usr/share/firefox"
 arq1=$(pwd $2)
+arq="$HOME/Downloads/firefox*"
+desk="$HOME/Desktop/firefox.desktop"
 
+if [ ! -f "$arq1" ];then
+	v=$(ls $HOME/Downloads/firefox* | sed 's/.*-//g;s/.tar.*//g')
+else
+	v=$(ls $arq1 | sed 's/.*-//g;s/.tar.*//g')
+fi
 
-#if [ "$usrX" != "root" ]; 
-#then
-#	arq="$HOME/Downloads/firefox*"
-#	desk="/home/$usrX/Desktop/firefox.desktop"
-	
-	if [ ! -f "$arq1" ];
-	then
-		v=$(ls $HOME/Downloads/firefox* | sed 's/.*-//g;s/.tar.*//g')
-	else
-		v=$(ls $arq1 | sed 's/.*-//g;s/.tar.*//g')
-	fi
-#else
-	arq="$HOME/Downloads/firefox*"
-	desk="$HOME/Desktop/firefox.desktop"
-
-	if [ ! -f "$arq1" ];
-	then
-		v=$(ls $HOME/Downloads/firefox* | sed 's/.*-//g;s/.tar.*//g')
-	else
-		v=$(ls $arq1 | sed 's/.*-//g;s/.tar.*//g')
-	fi
-#fi
-
-# https://www.mozilla.org/pt-BR/firefox/download/thanks/	( Link direto arqv br.fire.bz2 ) 
-#https://download-installer.cdn.mozilla.net/pub/firefox/releases/125.0.1/linux-x86_64/pt-BR/firefox-125.0.1.tar.bz2
+# https://www.mozilla.org/pt-BR/firefox/download/thanks/	( Links diretos arqv br.fire.bz2 ) 
+# https://download-installer.cdn.mozilla.net/pub/firefox/releases/125.0.1/linux-x86_64/pt-BR/firefox-125.0.1.tar.bz2
 
 msg="
 $C$N$l
@@ -69,17 +53,17 @@ $C$N$l
   faça o download do arquivo em https://www.mozilla.org/pt-BR/firefox/all/#product-desktop-release 
 	
   Uso:
-  $G$F      installfire [$C-c, -i, -h, -r, -v$G] firefox.zip $Z
+  $G$F      $prog [$C-c, -i, -h, -r, -v$G] firefox.zip $Z
 
-  $C$N	-c -- Configurar o$G$F $prog $Z$C$N no Sistema
-	-i -- Instalar o Firefox, caso não tenha feito o download do zip o download será feito automático
+  $C$N	-c -- Configurar o$G$F $prog $Z$C$N no sistema, depois de configurado usar [ instfire ]
+  	-i -- Instalar o Firefox, caso não tenha feito o download do zip ele será feito automáticamente
 	-h -- Help, informações de uso
-	-r -- Remover o Firefox
+	-r -- Remover o Firefox do sistema
 	-v -- Versão
 $l $Z
 "
 
-			# Dados a serem gravados no ícone
+# Dados a serem gravados no ícone
 ico(){		
 echo "[Desktop Entry]" > $desk
 echo "Categories=Network;" >> $desk
@@ -94,12 +78,12 @@ echo "Version=$v" >> $desk
 echo "AppID=firefox" >> $desk
 }
 
-	# Configuração do InstallFire no Sistema =================
+# Configuração do InstallFire no Sistema =================
 config(){
 	local=$(pwd)
 	if [ ! -d "/usr/share/installfire" ]; then
 		sudo mkdir /usr/share/installfire/
-		sudo cp $local/installfire.sh /usr/share/installfire/
+		sudo cp $local/installfire.sh /usr/share/installfire/installfire
 		sudo chown root:root /usr/share/installfire/*
 		sudo chmod 755 /usr/share/installfire/*
 		sudo ln -s /usr/share/installfire/installfire /usr/bin/instfire
@@ -109,7 +93,8 @@ config(){
   	else
 		echo -e "$F$G\n\t\tDiretório encontrado, configurndo Programa..\n$Z"
 
-		sudo cp $local/installfire.sh /usr/share/installfire/
+		sudo rm -f /usr/share/installfire/*
+		sudo cp $local/installfire.sh /usr/share/installfire/installfire
 		sudo chown root:root /usr/share/installfire/*
 		sudo chmod 755 /usr/share/installfire/*
 		sudo ln -s -f /usr/share/installfire/installfire /usr/bin/instfire
@@ -120,7 +105,7 @@ config(){
 }
 
 
-	# Verificar se o diretório existe, caso contrário, cria ====================
+# Verificar se o diretório existe, caso contrário, cria ====================
 pathfire(){
 	if [ ! -d "$dir" ];
 	then
@@ -131,7 +116,7 @@ pathfire(){
 	fi
 }
 
-	# Classe para remover o Firefox ======================
+# Classe para remover o Firefox ======================
 remove(){
 	clear
 	echo -e "$R$F\t\tRemovendo o firefox..$Z"
@@ -154,7 +139,7 @@ remove(){
 	clear
 }
 
-	# Download e instalação direta do Firefox PT-BR (Configurar o link para sua lingua )================
+# Download e instalação direta do Firefox PT-BR (Configurar o link para sua lingua )================
 download(){
 	clear
 	if [ ! -f $arq ]; 
@@ -171,7 +156,7 @@ download(){
 	fi
 }
 
-	# Extração do arqv .tar ====================
+# Extração do arqv .tar ====================
 install(){
 	clear
 	pkill firefox
@@ -222,7 +207,7 @@ install(){
 	sleep 1
 }
 
-
+# Opções do programa ======================
 case $1 in  
    -h)
 	clear
