@@ -38,6 +38,7 @@ arq1=$(pwd $2)
 arq="$HOME/Downloads/firefox*"
 desk="$HOME/Desktop/firefox.desktop"
 downloadv=$2
+v=$(ls $arq | sed 's/.*-//g;s/.tar.*//g')
 
 # https://www.mozilla.org/pt-BR/firefox/download/thanks/	( Links diretos arqv br.fire.bz2 ) 
 # https://download-installer.cdn.mozilla.net/pub/firefox/releases/125.0.1/linux-x86_64/pt-BR/firefox-125.0.1.tar.bz2
@@ -63,7 +64,6 @@ $l $Z
 
 # Dados a serem gravados no ícone
 ico(){		
-v=$(ls "$HOME/Downloads/firefox-*" | sed 's/.*-//g;s/.tar.*//g')
 echo "[Desktop Entry]" > $desk
 echo "Categories=Network;" >> $desk
 echo "Comment=Navegador Web" >> $desk
@@ -145,7 +145,7 @@ download(){
 	then
 			clear
 			echo -e "$F$R\n\t\tErro em opção!
-		$F${C}Informe a VERSÂO a ser baixada. Ex.:$F$G 125 130
+		$F${C}Informe a VERSÂO a ser baixada. Ex.:$F$G 125 130 130.0 132.0.2
 		$F${C}Verifique a versão de download, em: $F${G}https://download-installer.cdn.mozilla.net/pub/firefox/releases/ \n\n"
 			echo -ne "$F$C Pressione 'Enter' para sair: $Z"; read
 			clear
@@ -160,11 +160,28 @@ download(){
 		
 		echo -e "$G$F==[ Baixando o$C$F Firefox$G$F $downloadv ]================================"
 		#== VERSÃO DO DOWNLOAD PASSADA NA OPÇÃO -d ** [ /releases/**  e  nome do arquivo-**.tar ]==============
-		url="https://download-installer.cdn.mozilla.net/pub/firefox/releases/$downloadv.0/linux-x86_64/pt-BR/firefox-$downloadv.0.tar.bz2 -P $HOME/Downloads/"
+		url="https://download-installer.cdn.mozilla.net/pub/firefox/releases/${downloadv}/linux-x86_64/pt-BR/firefox-${downloadv}.tar.bz2 -P $HOME/Downloads/"
 		wget $url
 		sleep .5
 		fi
 	fi
+}
+
+makeIco(){
+	if [ ! -f $arq1 ];then
+		v=$(ls $arq | sed 's/.*-//g;s/.tar.*//g')
+	else 
+		v=$(ls $arq1 | sed 's/.*-//g;s/.tar.*//g')
+	fi
+
+	echo -e "$G$F\t\tCriando atalho..$Z"
+	touch $desk
+	ico
+
+	chmod +x $desk
+	chown $USER:$USER $desk
+	sudo cp $desk /usr/share/applications/
+	sleep 1
 }
 
 # Extração do arqv .tar ====================
@@ -206,26 +223,12 @@ install(){
 
 	sleep 1
 	clear
-}
-
-makeIco(){
-	if [ ! -f "$arq1" ];then
-		v=$(ls $arq | sed 's/.*-//g;s/.tar.*//g')
-	else
-		v=$(ls $arq1 | sed 's/.*-//g;s/.tar.*//g')
-	fi
-
-	echo -e "$G$F\t\tCriando atalho..$Z"
-	touch $desk
-	ico
-	chmod +x $desk
-	chown $USER:$USER $desk
-	sudo cp $desk /usr/share/applications/
+	makeIco
 	sleep 1
+	rm -rf $arq
 }
 
 # Opções do programa ======================
-v=$(ls $arq | sed 's/.*-//g;s/.tar.*//g')
 case $1 in  
    -h)
 		clear
@@ -249,7 +252,6 @@ case $1 in
 		pathfire
 		download
 		install
-		make_ico
 
 		while [ install != True ];
 		do
@@ -265,7 +267,6 @@ case $1 in
    -i ) 
 		pathfire
 		install
-		make_ico
 
 		while [ install != True ];
 		do
